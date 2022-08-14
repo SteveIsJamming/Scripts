@@ -1,78 +1,84 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Rebirth Champions X", "Ocean")
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "Rebirth Champions X", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
 
---AutoFarm
-local Main = Window:NewTab("Main")
-local MainSection = Main:NewSection("AutoFarm")
+--Values
+getgenv().Clicker = true
+getgenv().Rebirth = true
+getgenv().Boost = true
+getgenv().AutoEvolve = true
 
+--Functions
+function Click()
+	while (Clicker) do
+		game:GetService("ReplicatedStorage").Events.Click3:FireServer()
+        task.wait()
+	end
+end
 
-MainSection:NewToggle("AutoClick", "Click go brrr", function(state)
-    if state then
-        getgenv().Clicker = true
-        function Click()
-            spawn(function ()
-                while (Clicker) do
-                    game:GetService("ReplicatedStorage").Events.Click3:FireServer()
-                    task.wait()
-                end
-            end)
-        end
-        Click()
-    else
-        getgenv().Clicker = false
+function AutoRebirth(RebirthAmount)
+    while (Rebirth) do
+		local args = {[1] = RebirthAmount}
+		game:GetService("ReplicatedStorage").Events.Rebirth:FireServer(unpack(args))
+		task.wait()
     end
-end)
+end
 
-MainSection:NewToggle("AutoRebirth", "Rebirth go brrr", function(state)
-    if state then
-        getgenv().Rebirth = true
-        function AutoRebirth(RebirthAmount)
-            spawn(function ()
-                while (Rebirth) do
-                    local args = {[1] = RebirthAmount}
-                    game:GetService("ReplicatedStorage").Events.Rebirth:FireServer(unpack(args))
-                    task.wait()
-                end
-            end)
-        end
-        AutoRebirth(52)
-    else
-        getgenv().Rebirth = false
+function BoostArea(Area)
+    while (Boost) do
+		local args = {[1] = Area}
+		game:GetService("ReplicatedStorage").Events.WorldBoost:FireServer(unpack(args))
+		task.wait()
     end
-end)
+end
 
-MainSection:NewToggle("WorldBoost", "Extra Multiplier", function(state)
-    if state then
-        getgenv().Boost = true
-        function BoostArea(Area)
-            spawn(function ()
-                while (Boost) do
-                    local args = {[1] = Area}
-                    game:GetService("ReplicatedStorage").Events.WorldBoost:FireServer(unpack(args))
-                    task.wait()
-                end
-            end)
-        end
-        BoostArea("Tutel Oasis")
-    else
-        getgenv().Boost = false
+function Craft()
+     while (AutoEvolve) do
+        local args = {[1] = "CraftAll",[2] = {}}
+        game:GetService("ReplicatedStorage").Functions.Request:InvokeServer(unpack(args))
+        task.wait(1)
     end
-end)
+end
 
-MainSection:NewToggle("AutoCraft", "AutoCrafts Pets", function(state)
-    if state then
-        getgenv().AutoEvolve = true
-        function Craft()
-            spawn(function ()
-                while (AutoEvolve) do
-                    local args = {[1] = "CraftAll",[2] = {}}
-                    game:GetService("ReplicatedStorage").Functions.Request:InvokeServer(unpack(args))
-                    task.wait(1)
-                end
-            end)
-        end
-        Craft()        
-    else
-        getgenv().AutoEvolve = false
-    end
-end)
+local AutoFarmTab = Window:MakeTab({
+	Name = "AutoFarm",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+AutoFarmTab:AddToggle({
+	Name = "Auto Click",
+	Default = false,
+	Callback = function(Value)
+		getgenv().Clicker = Value
+		Click()
+	end    
+})
+
+AutoFarmTab:AddToggle({
+	Name = "Auto Rebirth",
+	Default = false,
+	Callback = function(Value)
+		getgenv().Rebirth = Value
+		AutoRebirth(52)
+	end    
+})
+
+AutoFarmTab:AddToggle({
+	Name = "Boost",
+	Default = false,
+	Callback = function(Value)
+		getgenv().Boost = Value
+		BoostArea("Tutel Oasis")
+	end    
+})
+
+AutoFarmTab:AddToggle({
+	Name = "Auto Craft",
+	Default = false,
+	Callback = function(Value)
+		getgenv().AutoEvolve = Value
+		Craft()
+	end    
+})
+
+OrionLib:Init()
