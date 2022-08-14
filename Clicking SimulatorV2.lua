@@ -59,9 +59,25 @@ AutoFarmTab:AddToggle({
 	Default = false,
 	Callback = function(Value)
 		getgenv().Rebirth = Value
-		AutoRebirth(52)
+		AutoRebirth(RebirthAmount)
 	end    
 })
+
+AutoFarmTab:AddSlider({
+	Name = "RebirthAmount",
+	Min = 1,
+	Max = 60,
+	Default = 5,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "RebirthAmount",
+	Callback = function(Value)
+		RebirthAmount = Value
+	end    
+})
+
+
+
 
 AutoFarmTab:AddToggle({
 	Name = "Boost",
